@@ -47,3 +47,5 @@ using namespace cv;
 /**
  */
 int video_loop(void (*update)(Vec3d));
+
+void init_video();

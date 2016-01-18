@@ -103,18 +103,23 @@ static bool readDetectorParameters(string filename, Ptr<aruco::DetectorParameter
 }
 
 
+VideoCapture inputVideo;
+int waitTime;
+Mat camMatrix, distCoeffs;
+Ptr<aruco::Dictionary> dictionary;
+double totalTime = 0;
+int totalIterations = 0;
+Ptr<aruco::DetectorParameters> detectorParams;
 
-/**
- */
-int video_loop(void (*update)(Vec3d)){
-
+void init_video()
+{
     int dictionaryId = 0;
     bool showRejected = false;
     bool estimatePose = true;
     //TODO change this shit
     float markerLength = 0.055;
 
-    Ptr<aruco::DetectorParameters> detectorParams = aruco::DetectorParameters::create();
+    detectorParams = aruco::DetectorParameters::create();
 
     /*
     if(parser.has("dp")) {
@@ -129,26 +134,31 @@ int video_loop(void (*update)(Vec3d)){
 
     int camId = 0;
 
-    Ptr<aruco::Dictionary> dictionary =
+    dictionary =
         aruco::getPredefinedDictionary(aruco::PREDEFINED_DICTIONARY_NAME(dictionaryId));
 
-    Mat camMatrix, distCoeffs;
     if(estimatePose) {
         bool readOk = readCameraParameters("params.yml", camMatrix, distCoeffs);
         if(!readOk) {
             cerr << "Invalid camera file" << endl;
-            return 0;
+            return;
         }
     }
 
-    VideoCapture inputVideo;
-    int waitTime;
 
     inputVideo.open(camId);
     waitTime = 10;
+}
 
-    double totalTime = 0;
-    int totalIterations = 0;
+/**
+ */
+int video_loop(void (*update)(Vec3d)){
+    
+    int dictionaryId = 0;
+    bool showRejected = false;
+    bool estimatePose = true;
+    //TODO change this shit
+    float markerLength = 0.055;
 
     while(inputVideo.grab()) {
         Mat image, imageCopy;
@@ -184,8 +194,9 @@ int video_loop(void (*update)(Vec3d)){
                 {
                     aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i],
                                     markerLength * 0.5f);
-                    cout << tvecs[i] << endl;
+                    //cout << tvecs[i] << endl;
                     update(tvecs[i]);
+                    return 0;
                 }
             }
         }
@@ -194,8 +205,10 @@ int video_loop(void (*update)(Vec3d)){
             aruco::drawDetectedMarkers(imageCopy, rejected, noArray(), Scalar(100, 0, 255));
 
         imshow("out", imageCopy);
-        char key = (char)waitKey(waitTime);
-        if(key == 27) break;
+        waitKey(1);
+        //char key = (char)waitKey(waitTime);
+        //if(key == 27) break;
+        cout << "none found" << endl;
     }
 
     return 0;

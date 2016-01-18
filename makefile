@@ -10,7 +10,7 @@ all: test demo
 test: test.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
-demo: opengl.o
+demo: opengl.o detect_markers.o
 	$(CC) $(CFLAGS) $(INCLUDE) $(LIBS) $^ -o $@ $(LDFLAGS)
 
 opengl.o:

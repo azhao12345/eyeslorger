@@ -8,6 +8,8 @@
 #include <vector>
 
 #include "opengl_demo.h"
+#include "../detect_markers.hpp"
+#include "opencv2/opencv.hpp"
 
 using namespace std;
 
@@ -78,9 +80,20 @@ void create_lights();
 void create_cubes();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
+void update_camera_parameters();
+void update_camera_matrix();
 /* From here on are all the function implementations.
  */
+void update(Vec3d v)
+{
+    cout << v << endl;
+    cam_position[0] = -(v[0] * 10);
+    cam_position[1] = -(v[1] * 10);
+    cam_position[2] = v[2] * 10;
+    update_camera_parameters();
+    update_camera_matrix();
+    glutPostRedisplay();
+}
 
 
 void update_camera_matrix()
@@ -321,13 +334,19 @@ void update_camera_parameters()
     bottom_param = (-screen_dim / 2 - cam_position[1]) / cam_position[2];
 }
 
+void run_video_loop()
+{
+    video_loop(update);
+}
+
 void key_pressed(unsigned char key, int x, int y)
 {
     //camera update stuff test 
 
     if(key == 'z')
     {
-        
+        video_loop(update);
+      /*  
         //left_param += 0.1;
         //right_param += 0.1;
 
@@ -343,7 +362,7 @@ void key_pressed(unsigned char key, int x, int y)
 
         update_camera_matrix();
         glutPostRedisplay();
-        return;
+        return;*/
     }
     else if(key == 'x')
     {
@@ -808,12 +827,15 @@ void create_cubes()
     objects.push_back(cube2);
 }
 
+
 /* The 'main' function:
  *
  * This function is short, but is basically where everything comes together.
  */
 int main(int argc, char* argv[])
 {
+    
+    init_video();
     int xres = 500;
     int yres = 500;
     
@@ -864,5 +886,8 @@ int main(int argc, char* argv[])
      * is an infinite loop where OpenGL will continuously use our display, reshape,
      * mouse, and keyboard functions to essentially run our program.
      */
+
+    glutIdleFunc(run_video_loop);
+
     glutMainLoop();
 }
