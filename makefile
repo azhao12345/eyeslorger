@@ -13,7 +13,7 @@ test: test.o
 demo: opengl.o detect_markers.o
 	$(CC) $(CFLAGS) $(INCLUDE) $(LIBS) $^ -o $@ $(LDFLAGS)
 
-opengl.o:
+opengl.o: OpenGL_Demo/opengl_demo.cpp
 	$(CC) $(CFLAGS) $(INCLUDE) $(LIBS) -c -o $@ OpenGL_Demo/opengl_demo.cpp
 
 clean:

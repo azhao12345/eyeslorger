@@ -1,3 +1,6 @@
+// UNITS IN CM i THINK
+// my screen is 60 mm for 500px
+
 #include <GL/glew.h>
 #include <GL/glut.h>
 
@@ -86,10 +89,12 @@ void update_camera_matrix();
  */
 void update(Vec3d v)
 {
+    //offset of the camera from the center of the thing
+    float offset = 5;
     cout << v << endl;
-    cam_position[0] = -(v[0] * 10);
-    cam_position[1] = -(v[1] * 10);
-    cam_position[2] = v[2] * 10;
+    cam_position[0] = -(v[0]);
+    cam_position[1] = -(v[1] - offset);
+    cam_position[2] = v[2];
     update_camera_parameters();
     update_camera_matrix();
     glutPostRedisplay();
@@ -163,6 +168,12 @@ void init(void)
     init_lights();
 }
 
+float width_dim = 10.;
+float height_dim = 10.;
+
+float dpi = 84;
+
+
 void reshape(int width, int height)
 {
     /* The following two lines of code prevent the width and height of the
@@ -171,8 +182,19 @@ void reshape(int width, int height)
      */
     height = (height == 0) ? 1 : height;
     width = (width == 0) ? 1 : width;
+
+    cout << width << endl;
+    cout << height << endl;
+
     
     glViewport(0, 0, width, height);
+    
+    
+    height_dim = height / dpi;
+    width_dim = width / dpi;
+
+    update_camera_parameters();
+    update_camera_matrix();
     
     mouse_scale_x = (float) (right_param - left_param) / (float) width;
     mouse_scale_y = (float) (top_param - bottom_param) / (float) height;
@@ -327,11 +349,10 @@ float deg2rad(float angle)
 //update the camera fustrum parameters
 void update_camera_parameters()
 {
-    float screen_dim = 10.0;
-    left_param = (-screen_dim / 2 - cam_position[0]) / cam_position[2];
-    right_param = (screen_dim / 2 - cam_position[0]) / cam_position[2];
-    top_param = (screen_dim / 2 - cam_position[1]) / cam_position[2];
-    bottom_param = (-screen_dim / 2 - cam_position[1]) / cam_position[2];
+    left_param = (-width_dim / 2 - cam_position[0]) / cam_position[2];
+    right_param = (width_dim / 2 - cam_position[0]) / cam_position[2];
+    top_param = (height_dim / 2 - cam_position[1]) / cam_position[2];
+    bottom_param = (-height_dim / 2 - cam_position[1]) / cam_position[2];
 }
 
 void run_video_loop()
@@ -775,6 +796,7 @@ void create_cubes()
     transforms1.rotation[1] = 1;
     transforms1.rotation[2] = 0;
     transforms1.rotation_angle = 60;
+    //transforms1.rotation_angle = 0;
     
     transforms1.scaling[0] = 0.5;
     transforms1.scaling[1] = 0.5;
@@ -795,7 +817,8 @@ void create_cubes()
     transforms2.rotation[0] = 0;
     transforms2.rotation[1] = 1;
     transforms2.rotation[2] = 0;
-    transforms2.rotation_angle = 135;
+    //transforms2.rotation_angle = 135;
+    transforms2.rotation_angle = 0;
     
     transforms2.scaling[0] = 1.5;
     transforms2.scaling[1] = 1.5;

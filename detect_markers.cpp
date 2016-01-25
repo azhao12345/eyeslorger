@@ -37,6 +37,7 @@ the use of this software, even if advised of the possibility of such damage.
 */
 
 
+#include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/aruco.hpp>
 #include <iostream>
@@ -117,7 +118,7 @@ void init_video()
     bool showRejected = false;
     bool estimatePose = true;
     //TODO change this shit
-    float markerLength = 0.055;
+    float markerLength = 5.3;
 
     detectorParams = aruco::DetectorParameters::create();
 
@@ -158,11 +159,18 @@ int video_loop(void (*update)(Vec3d)){
     bool showRejected = false;
     bool estimatePose = true;
     //TODO change this shit
-    float markerLength = 0.055;
+    float markerLength = 5.3;
 
     while(inputVideo.grab()) {
         Mat image, imageCopy;
         inputVideo.retrieve(image);
+
+        //now smallify the image
+        Size s = image.size();
+        s.height /= 2;
+        s.width /= 2;
+        image.copyTo(imageCopy);
+        cv::resize(imageCopy, image, s);
 
         double tick = (double)getTickCount();
 
