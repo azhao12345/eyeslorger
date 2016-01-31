@@ -87,17 +87,68 @@ void update_camera_parameters();
 void update_camera_matrix();
 /* From here on are all the function implementations.
  */
+
+float x_pos;
+float y_pos;
+float z_pos;
 void update(Vec3d v)
 {
+    x_pos = v[0];
+    y_pos = v[1];
+    z_pos = v[2];
+
     //offset of the camera from the center of the thing
     float offset = 5;
-    cout << v << endl;
     cam_position[0] = -(v[0]);
     cam_position[1] = -(v[1] - offset);
     cam_position[2] = v[2];
     update_camera_parameters();
     update_camera_matrix();
     glutPostRedisplay();
+}
+
+template<typename T>
+string tostr(const T& t)
+{
+    ostringstream os;
+    os << t;
+    return os.str();
+}
+
+void draw_text()
+{
+    glColor3f(0, 1, 0);
+
+    string x_str = "x: " + tostr(x_pos);
+    string y_str = "y: " + tostr(y_pos);
+    string z_str = "z: " + tostr(z_pos);
+    string min_str = "";
+    string max_str = "";
+    string t_str = "";
+
+    glRasterPos2f(4, 3);
+    for(int i = 0; i < x_str.length(); i++)
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, x_str[i]);
+
+    glRasterPos2f(4,4);
+    for(int i = 0; i < y_str.length(); i++)
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, y_str[i]);
+
+    glRasterPos2f(4,5);
+    for(int i = 0; i < z_str.length(); i++)
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, z_str[i]);
+
+    glRasterPos2f(-7.4,-8.3);
+    for(int i = 0; i < min_str.length(); i++)
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, min_str[i]);
+
+    glRasterPos2f(-7.4,-9.3);
+    for(int i = 0; i < max_str.length(); i++)
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, max_str[i]);
+
+    glRasterPos2f(3.64,-9.3);
+    for(int i = 0; i < t_str.length(); i++)
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, t_str[i]);
 }
 
 
@@ -217,6 +268,8 @@ void display(void)
     set_lights();
     
     draw_objects();
+
+    draw_text();
     
     glutSwapBuffers();
 }
