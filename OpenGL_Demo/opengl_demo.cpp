@@ -14,6 +14,8 @@
 #include "../detect_markers.hpp"
 #include "opencv2/opencv.hpp"
 
+#include "../glFunctions.h"
+
 using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,6 +71,8 @@ float x_view_angle = 0, y_view_angle = 0;
 
 bool is_pressed = false;
 bool wireframe_mode = false;
+
+GLuint checkerboard_texture;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -217,6 +221,8 @@ void init(void)
     create_lights();
     
     init_lights();
+
+    createTexture(checkerboard_texture, "image.png");
 }
 
 float width_dim = 10.;
@@ -270,6 +276,44 @@ void display(void)
     draw_objects();
 
     draw_text();
+
+    //now draw the floor
+    glPushMatrix();
+
+    glEnable(GL_TEXTURE_2D);
+    //glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, checkerboard_texture);
+            glMaterialfv(GL_FRONT, GL_AMBIENT, objects[0].ambient_reflect);
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, objects[0].diffuse_reflect);
+            glMaterialfv(GL_FRONT, GL_SPECULAR, objects[0].specular_reflect);
+            glMaterialf(GL_FRONT, GL_SHININESS, objects[0].shininess);
+    // Draw a fullscreen quad with appropriate tex coords.
+//    glBegin(GL_POLYGON);
+//    glTexCoord2f(1, 0);
+//    glVertex3f(1, 0, 0);
+//    glTexCoord2f(1, 1);
+//    glVertex3f(1, 1, 0);
+//    glTexCoord2f(0, 1);
+//    glVertex3f(0, 1, 0);
+//    glTexCoord2f(0, 0);
+//    glVertex3f(0, 0, 0);
+//    glEnd();
+    
+    glBegin(GL_POLYGON);
+    glTexCoord2f(1, 0);
+    glVertex3f(2, -2, 2);
+    glTexCoord2f(1, 1);
+    glVertex3f(2, -2, -2);
+    glTexCoord2f(0, 1);
+    glVertex3f(-2, -2, -2);
+    glTexCoord2f(0, 0);
+    glVertex3f(-2, -2, 2);
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+
+glPopMatrix();
+    
     
     glutSwapBuffers();
 }
@@ -865,13 +909,14 @@ void create_cubes()
     
     transforms2.translation[0] = 2.0;
     transforms2.translation[1] = 0;
-    transforms2.translation[2] = 0;
+    transforms2.translation[2] = 2.0;
     
     transforms2.rotation[0] = 0;
     transforms2.rotation[1] = 1;
     transforms2.rotation[2] = 0;
     //transforms2.rotation_angle = 135;
-    transforms2.rotation_angle = 0;
+    transforms2.rotation_angle = 15;
+    //transforms2.rotation_angle = 0;
     
     transforms2.scaling[0] = 1.5;
     transforms2.scaling[1] = 1.5;

@@ -1,6 +1,6 @@
 CC = g++
 
-CFLAGS = `pkg-config --cflags opencv`
+CFLAGS = `pkg-config --cflags opencv` -g
 LDFLAGS = `pkg-config --libs opencv` -lpng
 INCLUDE =  -I/usr/X11R6/include -I/usr/include/GL -I/usr/include
 LIBS = -lGLEW -lGL -lGLU -lglut -lm
