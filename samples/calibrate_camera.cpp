@@ -165,7 +165,7 @@ int main(int argc, char *argv[]) {
     string outputFile = parser.get<String>(0);
 
     int calibrationFlags = 0;
-    float aspectRatio = 1;
+    double aspectRatio = 1;
     if(parser.has("a")) {
         calibrationFlags |= CALIB_FIX_ASPECT_RATIO;
         aspectRatio = parser.get<float>("a");
@@ -286,6 +286,15 @@ int main(int argc, char *argv[]) {
     repError = aruco::calibrateCameraAruco(allCornersConcatenated, allIdsConcatenated,
                                            markerCounterPerFrame, board, imgSize, cameraMatrix,
                                            distCoeffs, rvecs, tvecs, calibrationFlags);
+  double apertureWidth = 1;
+  double apertureHeight = 1;
+  double fieldOfViewX;
+  double fieldOfViewY;
+  double focalLength;
+  cv::Point2d principalPoint;
+  cv::calibrationMatrixValues(cameraMatrix, imgSize, apertureWidth, apertureHeight, fieldOfViewX, fieldOfViewY, focalLength, principalPoint, aspectRatio);
+
+cout << fieldOfViewX << endl;
 
     bool saveOk = saveCameraParams(outputFile, imgSize, aspectRatio, calibrationFlags, cameraMatrix,
                                    distCoeffs, repError);

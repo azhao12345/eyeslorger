@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <iostream>
 
 using namespace cv;
 using namespace std;
@@ -169,7 +170,7 @@ static bool runCalibration( vector<vector<Point2f> > imagePoints,
 
 static void saveCameraParams( const string& filename,
                        Size imageSize, Size boardSize,
-                       float squareSize, float aspectRatio, int flags,
+                       float squareSize, double aspectRatio, int flags,
                        const Mat& cameraMatrix, const Mat& distCoeffs,
                        const vector<Mat>& rvecs, const vector<Mat>& tvecs,
                        const vector<float>& reprojErrs,
@@ -206,6 +207,23 @@ static void saveCameraParams( const string& filename,
             flags & CALIB_ZERO_TANGENT_DIST ? "+zero_tangent_dist" : "" );
         //cvWriteComment( *fs, buf, 0 );
     }
+
+  double apertureWidth = 1;
+  double apertureHeight = 1;
+  double fieldOfViewX;
+  double fieldOfViewY;
+  double focalLength;
+  cv::Point2d principalPoint;
+  cv::calibrationMatrixValues(cameraMatrix, imageSize, apertureWidth, apertureHeight, fieldOfViewX, fieldOfViewY, focalLength, principalPoint, aspectRatio);
+
+cout << fieldOfViewX << endl;
+ 
+apertureWidth = 10;
+apertureHeight = 10; 
+cv::calibrationMatrixValues(cameraMatrix, imageSize, apertureWidth, apertureHeight, fieldOfViewX, fieldOfViewY, focalLength, principalPoint, aspectRatio);
+
+cout << fieldOfViewX << endl;
+
 
     fs << "flags" << flags;
 
@@ -416,7 +434,10 @@ int main( int argc, char** argv )
         Size s = view0.size();
         s.height /= 2;
         s.width /= 2;
+        // just for fun, let's crop this down
         cv::resize(view0, view, s);
+        //Rect rect(s.width / 2, s.height / 2, s.width, s.height);
+        //view = view0(rect);
 
         }
         else if( i < (int)imageList.size() )
