@@ -1,0 +1,1 @@
+./calibrate_camera -d=0 -l=.016 -h=7 -w=5 -s=0.00994 out3.yml
