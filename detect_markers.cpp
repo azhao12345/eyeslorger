@@ -46,6 +46,20 @@ the use of this software, even if advised of the possibility of such damage.
 using namespace std;
 using namespace cv;
 
+
+int video_loop();
+void init_video();
+
+int main(int argc, char * argv[])
+{
+    init_video();
+    while(1)
+    {
+        video_loop();
+    }
+}
+
+
 namespace {
 const char* about = "Basic marker detection";
 const char* keys  =
@@ -153,7 +167,7 @@ void init_video()
 
 /**
  */
-int video_loop(void (*update)(Vec3d)){
+int video_loop(){
     
     int dictionaryId = 0;
     bool showRejected = false;
@@ -188,7 +202,7 @@ int video_loop(void (*update)(Vec3d)){
         totalTime += currentTime;
         totalIterations++;
         if(totalIterations % 30 == 0) {
-            cout << "Detection Time = " << currentTime * 1000 << " ms "
+            cerr << "Detection Time = " << currentTime * 1000 << " ms "
                  << "(Mean = " << 1000 * totalTime / double(totalIterations) << " ms)" << endl;
         }
 
@@ -202,8 +216,16 @@ int video_loop(void (*update)(Vec3d)){
                 {
                     aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i],
                                     markerLength * 0.5f);
-                    //cout << tvecs[i] << endl;
-                    update(tvecs[i]);
+                    Vec3d location = tvecs[i];
+                    Vec3d rotation = rvecs[i];
+                    cout << location[0] << " "
+                    << location[1] << " "
+                    << location[2] << " "
+                    << rotation[0] << " "
+                    << rotation[1] << " "
+                    << rotation[2] << " "
+                    << endl;
+                    
                     return 0;
                 }
             }
@@ -216,7 +238,7 @@ int video_loop(void (*update)(Vec3d)){
         waitKey(1);
         //char key = (char)waitKey(waitTime);
         //if(key == 27) break;
-        cout << "none found" << endl;
+        cerr << "none found" << endl;
     }
 
     return 0;
