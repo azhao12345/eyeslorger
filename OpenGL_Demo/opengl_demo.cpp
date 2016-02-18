@@ -11,7 +11,8 @@
 #include <vector>
 
 #include "opengl_demo.h"
-#include "../detect_markers.hpp"
+//#include "../detect_markers.hpp"
+#include "../inputpipe.h"
 #include "opencv2/opencv.hpp"
 
 #include "../glFunctions.h"
@@ -95,21 +96,21 @@ void update_camera_matrix();
 float x_pos;
 float y_pos;
 float z_pos;
-void update(Vec3d v)
-{
-    x_pos = v[0];
-    y_pos = v[1];
-    z_pos = v[2];
-
-    //offset of the camera from the center of the thing
-    float offset = 5;
-    cam_position[0] = -(v[0]);
-    cam_position[1] = -(v[1] - offset);
-    cam_position[2] = v[2];
-    update_camera_parameters();
-    update_camera_matrix();
-    glutPostRedisplay();
-}
+//void update(Vec3d v)
+//{
+//    x_pos = v[0];
+//    y_pos = v[1];
+//    z_pos = v[2];
+//
+//    //offset of the camera from the center of the thing
+//    float offset = 5;
+//    cam_position[0] = -(v[0]);
+//    cam_position[1] = -(v[1] - offset);
+//    cam_position[2] = v[2];
+//    update_camera_parameters();
+//    update_camera_matrix();
+//    glutPostRedisplay();
+//}
 
 template<typename T>
 string tostr(const T& t)
@@ -454,7 +455,24 @@ void update_camera_parameters()
 
 void run_video_loop()
 {
-    video_loop(update);
+    //video_loop(update);
+    float pos[3];
+    float rot[3];
+    if(read_marker_data(pos, rot))
+    {
+        x_pos = pos[0];
+        y_pos = pos[1];
+        z_pos = pos[2];
+
+        //offset of the camera from the center of the thing
+        float offset = 5;
+        cam_position[0] = -(pos[0]);
+        cam_position[1] = -(pos[1] - offset);
+        cam_position[2] = pos[2];
+        update_camera_parameters();
+        update_camera_matrix();
+        glutPostRedisplay();
+    }
 }
 
 void key_pressed(unsigned char key, int x, int y)
@@ -463,7 +481,7 @@ void key_pressed(unsigned char key, int x, int y)
 
     if(key == 'z')
     {
-        video_loop(update);
+//        video_loop(update);
       /*  
         //left_param += 0.1;
         //right_param += 0.1;
@@ -956,7 +974,7 @@ void create_cubes()
 int main(int argc, char* argv[])
 {
     
-    init_video();
+    //init_video();
     int xres = 500;
     int yres = 500;
     

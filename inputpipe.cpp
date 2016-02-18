@@ -8,8 +8,7 @@
 using namespace std;
 
 
-int read_marker_data(float* position, float* rotation);
-
+/*
 int main(int argc, char *argv[])
 {
     float pos[3];
@@ -22,7 +21,7 @@ int main(int argc, char *argv[])
         }
     }
 }
-
+*/
 int read_marker_data(float* position, float* rotation)
 {
     if(data_available)

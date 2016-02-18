@@ -218,6 +218,7 @@ int video_loop(){
                                     markerLength * 0.5f);
                     Vec3d location = tvecs[i];
                     Vec3d rotation = rvecs[i];
+                    cerr << location << endl;
                     cout << location[0] << " "
                     << location[1] << " "
                     << location[2] << " "

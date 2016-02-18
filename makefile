@@ -10,7 +10,10 @@ all: test demo
 test: test.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
-demo: opengl.o detect_markers.o readpng.o glFunctions.o
+detect_markers: detect_markers.o
+	$(CC) $(CFLAGS) $(INCLUDE) $(LIBS) $^ -o $@ $(LDFLAGS)
+
+demo: opengl.o readpng.o glFunctions.o inputpipe.o
 	$(CC) $(CFLAGS) $(INCLUDE) $(LIBS) $^ -o $@ $(LDFLAGS)
 
 opengl.o: OpenGL_Demo/opengl_demo.cpp
