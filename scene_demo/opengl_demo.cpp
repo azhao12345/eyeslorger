@@ -72,9 +72,23 @@ void run_video_loop()
     if(read_marker_data(pos, rot))
     {
         //offset of the camera from the center of the thing
-        objects[1].transform_sets[0].translation[0] = pos[0];
-        objects[1].transform_sets[0].translation[1] = pos[1];
+        objects[1].transform_sets[0].translation[0] = -pos[0];
+        objects[1].transform_sets[0].translation[1] = -pos[1];
         objects[1].transform_sets[0].translation[2] = pos[2];
+
+        float angle = sqrt(rot[0] * rot[0] 
+            + rot[1] * rot[1]
+            + rot[2] * rot[2]);
+
+        rot[0] /= angle;
+        rot[1] /= angle;
+        rot[2] /= angle;
+
+        objects[1].transform_sets[1].rotation[0] = -rot[0];
+        objects[1].transform_sets[1].rotation[1] = -rot[1];
+        objects[1].transform_sets[1].rotation[2] = rot[2];
+
+        objects[1].transform_sets[1].rotation_angle = angle / M_PI * 180.0;
         
         glutPostRedisplay();
     }
@@ -265,25 +279,25 @@ void create_lights()
     light1.position[3] = 1;
     light1.color[0] = 1;
     light1.color[1] = 1;
-    light1.color[2] = 0;
-    light1.attenuation_k = 0.2;
+    light1.color[2] = 1;
+    light1.attenuation_k = 0;
     lights.push_back(light1);
     Point_Light light2;
     light2.position[0] = 0.15;
     light2.position[1] = 0.85;
     light2.position[2] = 0.7;
-    light2.position[3] = 1;
+    light2.position[3] = -40;
     light2.color[0] = 1;
-    light2.color[1] = 0;
+    light2.color[1] = 1;
     light2.color[2] = 1;
-    light2.attenuation_k = 0.1;
+    light2.attenuation_k = 0;
     lights.push_back(light2);
     Point_Light light3;
     light3.position[0] = 0.5;
     light3.position[1] = -0.5;
     light3.position[2] = 0.85;
     light3.position[3] = 1;
-    light3.color[0] = 0;
+    light3.color[0] = 1;
     light3.color[1] = 1;
     light3.color[2] = 1;
     light3.attenuation_k = 0;
