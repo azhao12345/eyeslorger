@@ -24,8 +24,9 @@ int main(int argc, char *argv[])
 */
 int read_marker_data(float* position, float* rotation)
 {
-    if(data_available)
+    if(data_available())
     {
+        cout << "tryina slurp" << endl;
         string data;
         getline(cin, data);
         

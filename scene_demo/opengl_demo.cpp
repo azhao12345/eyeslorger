@@ -63,6 +63,23 @@ bool is_pressed = false;
 bool wireframe_mode = false;
 void create_lights();
 void create_cubes();
+
+void run_video_loop()
+{
+    //video_loop(update);
+    float pos[3];
+    float rot[3];
+    if(read_marker_data(pos, rot))
+    {
+        //offset of the camera from the center of the thing
+        objects[1].transform_sets[0].translation[0] = pos[0];
+        objects[1].transform_sets[0].translation[1] = pos[1];
+        objects[1].transform_sets[0].translation[2] = pos[2];
+        
+        glutPostRedisplay();
+    }
+}
+
 void init(void)
 {
     glShadeModel(GL_SMOOTH);
@@ -434,9 +451,9 @@ void create_cubes()
     transforms2.rotation[1] = 1;
     transforms2.rotation[2] = 0;
     transforms2.rotation_angle = 0;
-    transforms2.scaling[0] = .5;
-    transforms2.scaling[1] = .5;
-    transforms2.scaling[2] = .5;
+    transforms2.scaling[0] = 1;
+    transforms2.scaling[1] = 1;
+    transforms2.scaling[2] = 1;
     Transforms transforms3;
     transforms3.translation[0] = 0;
     transforms3.translation[1] = 0;
@@ -445,11 +462,11 @@ void create_cubes()
     transforms3.rotation[1] = 0;
     transforms3.rotation[2] = 0;
     transforms3.rotation_angle = 0;
-    transforms3.scaling[0] = 0.5;
-    transforms3.scaling[1] = 0.5;
-    transforms3.scaling[2] = 0.5;
+    transforms3.scaling[0] = 1;
+    transforms3.scaling[1] = 1;
+    transforms3.scaling[2] = 1;
     cube2.transform_sets.push_back(transforms2);
-    //cube2.transform_sets.push_back(transforms3);
+    cube2.transform_sets.push_back(transforms3);
     objects.push_back(cube1);
     objects.push_back(cube2);
 }
@@ -468,5 +485,6 @@ int main(int argc, char* argv[])
     glutMouseFunc(mouse_pressed);
     glutMotionFunc(mouse_moved);
     glutKeyboardFunc(key_pressed);
+    glutIdleFunc(run_video_loop);
     glutMainLoop();
 }
