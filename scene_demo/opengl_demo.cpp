@@ -4,10 +4,12 @@
 #define _USE_MATH_DEFINES 
 #include <iostream>
 #include <vector>
+#include <Eigen/Dense>
 
 #include "../inputpipe.h"
 
 using namespace std;
+using namespace Eigen;
 void init(void);
 void reshape(int width, int height);
 void display(void);
@@ -72,9 +74,9 @@ void run_video_loop()
     if(read_marker_data(pos, rot))
     {
         //offset of the camera from the center of the thing
-        objects[1].transform_sets[0].translation[0] = -pos[0];
-        objects[1].transform_sets[0].translation[1] = -pos[1];
-        objects[1].transform_sets[0].translation[2] = pos[2];
+        objects[1].transform_sets[1].translation[0] = pos[0];
+        objects[1].transform_sets[1].translation[1] = pos[1];
+        objects[1].transform_sets[1].translation[2] = pos[2];
 
         float angle = sqrt(rot[0] * rot[0] 
             + rot[1] * rot[1]
@@ -84,11 +86,11 @@ void run_video_loop()
         rot[1] /= angle;
         rot[2] /= angle;
 
-        objects[1].transform_sets[1].rotation[0] = -rot[0];
-        objects[1].transform_sets[1].rotation[1] = -rot[1];
-        objects[1].transform_sets[1].rotation[2] = rot[2];
+        objects[1].transform_sets[2].rotation[0] = rot[0];
+        objects[1].transform_sets[2].rotation[1] = rot[1];
+        objects[1].transform_sets[2].rotation[2] = rot[2];
 
-        objects[1].transform_sets[1].rotation_angle = angle / M_PI * 180.0;
+        objects[1].transform_sets[2].rotation_angle = angle / M_PI * 180.0;
         
         glutPostRedisplay();
     }
@@ -457,6 +459,20 @@ void create_cubes()
     transforms1.scaling[1] = 0.5;
     transforms1.scaling[2] = 0.5;
     cube1.transform_sets.push_back(transforms1);
+
+
+    Transforms transformsx;
+    transformsx.translation[0] = 0;
+    transformsx.translation[1] = 0;
+    transformsx.translation[2] = 0;
+    transformsx.rotation[0] = 0;
+    transformsx.rotation[1] = 0;
+    transformsx.rotation[2] = 1;
+    transformsx.rotation_angle = 180;
+    transformsx.scaling[0] = 1;
+    transformsx.scaling[1] = 1;
+    transformsx.scaling[2] = 1;
+
     Transforms transforms2;
     transforms2.translation[0] = 0;
     transforms2.translation[1] = 0;
@@ -479,6 +495,7 @@ void create_cubes()
     transforms3.scaling[0] = 1;
     transforms3.scaling[1] = 1;
     transforms3.scaling[2] = 1;
+    cube2.transform_sets.push_back(transformsx);
     cube2.transform_sets.push_back(transforms2);
     cube2.transform_sets.push_back(transforms3);
     objects.push_back(cube1);
@@ -486,6 +503,7 @@ void create_cubes()
 }
 int main(int argc, char* argv[])
 {
+    Matrix3d slorg;
     int xres = 500;
     int yres = 500;
     glutInit(&argc, argv);
