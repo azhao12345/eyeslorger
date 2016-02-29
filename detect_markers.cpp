@@ -132,7 +132,7 @@ void init_video()
     bool showRejected = false;
     bool estimatePose = true;
     //TODO change this shit
-    float markerLength = 5.3;
+    float markerLength = 2.8;
 
     detectorParams = aruco::DetectorParameters::create();
 
@@ -218,7 +218,7 @@ int video_loop(){
                                     markerLength * 0.5f);
                     Vec3d location = tvecs[i];
                     Vec3d rotation = rvecs[i];
-                    cerr << location << endl;
+                    //cerr << location << endl;
                     cout << location[0] << " "
                     << location[1] << " "
                     << location[2] << " "

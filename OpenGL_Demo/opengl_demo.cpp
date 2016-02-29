@@ -10,6 +10,9 @@
 #include <iostream>
 #include <vector>
 
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
+
 #include "opengl_demo.h"
 //#include "../detect_markers.hpp"
 #include "../inputpipe.h"
@@ -18,6 +21,7 @@
 #include "../glFunctions.h"
 
 using namespace std;
+using namespace Eigen;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -460,15 +464,35 @@ void run_video_loop()
     float rot[3];
     if(read_marker_data(pos, rot))
     {
+        //this stuff is just to display later
         x_pos = pos[0];
         y_pos = pos[1];
         z_pos = pos[2];
 
         //offset of the camera from the center of the thing
+        Transform <float, 3, Affine> t;
+        
+        //unrodrigez dis shit
+        float angle = sqrt(rot[0] * rot[0]
+            + rot[1] * rot[1]
+            + rot[2] * rot[2]);
+
+        rot[0] /= angle;
+        rot[1] /= angle;
+        rot[2] /= angle;
+        cout << angle << endl;
+
+        t = AngleAxis<float>(angle, Vector3f(rot[0], rot[1], rot[2]));
+        t = Translation<float, 3>(pos[0], pos[1], pos[2]) * t;
+        t = AngleAxis<float>(M_PI, Vector3f(0, 0, 1)) * t;
+
+        Vector3f markerSpaceLoc(12, 0, 0);
+        Vector3f screenSpaceLoc = t * markerSpaceLoc;
+
         float offset = 5;
-        cam_position[0] = -(pos[0]);
-        cam_position[1] = -(pos[1] - offset);
-        cam_position[2] = pos[2];
+        cam_position[0] = screenSpaceLoc[0];
+        cam_position[1] = screenSpaceLoc[1];
+        cam_position[2] = screenSpaceLoc[2];
         update_camera_parameters();
         update_camera_matrix();
         glutPostRedisplay();

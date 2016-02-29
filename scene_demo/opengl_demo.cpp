@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <Eigen/Dense>
+#include <Eigen/Geometry>
 
 #include "../inputpipe.h"
 
@@ -73,6 +74,10 @@ void run_video_loop()
     float rot[3];
     if(read_marker_data(pos, rot))
     {
+        Transform<float, 3, Affine> t;
+        Vector2f v1, v2;
+        t = Translation<float, 3>(pos[0], pos[1], pos[2]);
+        v2 = t * v1;
         //offset of the camera from the center of the thing
         objects[1].transform_sets[1].translation[0] = pos[0];
         objects[1].transform_sets[1].translation[1] = pos[1];
@@ -495,15 +500,16 @@ void create_cubes()
     transforms3.scaling[0] = 1;
     transforms3.scaling[1] = 1;
     transforms3.scaling[2] = 1;
+    transforms1.translation[0] = 5;
     cube2.transform_sets.push_back(transformsx);
     cube2.transform_sets.push_back(transforms2);
     cube2.transform_sets.push_back(transforms3);
+    cube2.transform_sets.push_back(transforms1);
     objects.push_back(cube1);
     objects.push_back(cube2);
 }
 int main(int argc, char* argv[])
 {
-    Matrix3d slorg;
     int xres = 500;
     int yres = 500;
     glutInit(&argc, argv);
