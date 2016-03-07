@@ -482,11 +482,17 @@ void run_video_loop()
         rot[2] /= angle;
         cout << angle << endl;
 
+        //perform the aruco transformation
         t = AngleAxis<float>(angle, Vector3f(rot[0], rot[1], rot[2]));
         t = Translation<float, 3>(pos[0], pos[1], pos[2]) * t;
+        //flip the camera because opencv does the screen
+        //upside down
         t = AngleAxis<float>(M_PI, Vector3f(0, 0, 1)) * t;
-
-        Vector3f markerSpaceLoc(12, 0, 0);
+        //screen offset from the camera
+        //t = Translation<float, 3>(0, 9, 0) * t;
+        
+        //location of the camera in marker space
+        Vector3f markerSpaceLoc(-3.5, -3, -1.8);
         Vector3f screenSpaceLoc = t * markerSpaceLoc;
 
         float offset = 5;

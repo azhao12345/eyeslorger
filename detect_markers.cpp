@@ -173,7 +173,7 @@ int video_loop(){
     bool showRejected = false;
     bool estimatePose = true;
     //TODO change this shit
-    float markerLength = 5.3;
+    float markerLength = 2.8;
 
     while(inputVideo.grab()) {
         Mat image, imageCopy;
